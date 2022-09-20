@@ -44,13 +44,13 @@
 
 打开`管理 → 虚拟介质管理`，选中所需更改虚拟硬盘，更改类型，选择应用
 
-![](img/multiattach-debian.png)
+![](img/multi-apply.png)
 
 设置成功
 
-![](img/multi-apply.png)
+![](img/multiattach-debian.png)
 
-kali，xp虚拟硬盘操作同上，此处省略
+Kali，XP靶机的虚拟硬盘操作同上，此处省略
 
 ### 搭建网络拓扑
 
@@ -61,9 +61,9 @@ kali，xp虚拟硬盘操作同上，此处省略
 **网关**——4块网卡
 
 - NAT网络：使网关可以访问攻击者主机
-- 仅主机（Host-Only）网络：
-- 内部网络intnet1，访问局域网1
-- 内部网络intnet2，访问局域网2
+- 仅主机（Host-Only）网络
+- 内部网络intnet1：访问局域网1
+- 内部网络intnet2：访问局域网2
 
 ![](img/gateway-net.png)
 
@@ -71,7 +71,7 @@ kali，xp虚拟硬盘操作同上，此处省略
 
 **攻击者**——1块网卡
 
-- NAT网络
+- NAT网络：访问网关
 
 ![](img/Attacker-net.png)
 
@@ -93,7 +93,7 @@ kali，xp虚拟硬盘操作同上，此处省略
 
 为方便对照测试结果，将不同机型与IP地址的对应关系总结如下：
 
-|                | 网卡类型  | IP             |
+|                | 连接方式  | IP             |
 | -------------- | --------- | -------------- |
 | Gateway-Debian | NAT网络   | 10.0.2.4       |
 | Gateway-Debian | Host-Only | 192.168.56.113 |
@@ -147,13 +147,13 @@ XP：
 
 ## 实验总结
 
-- 实验一开始配置Gatway网络就开始和指导视频不一样，对于网卡1配置NAT网络时出现报错——发现无效设置
+- 实验一开始配置Gateway网络就开始和指导视频不一样，对于网卡1配置NAT网络时出现报错——发现无效设置
 
   ![](img/natnetwork-error.png)
 
   上网搜索教程发现Virtualbox默认没有安装NAT网络，需要自己手动配置
 
-  在管理→全局设定→网络，添加NAT网络后成功
+  在`管理→全局设定→网络`，添加NAT网络后成功
 
   ![](img/natnetwork.png)
 
@@ -163,12 +163,13 @@ XP：
 
   ![](img/ssh-fail.png)
 
-  查看ssh配置文件sudo vi /etc/ssh/sshd_config，将#PermitRootLogin yes一行的注释符删除后重启ssh服务
+  查看ssh配置文件`sudo vi /etc/ssh/sshd_config`，添加`PermitRootLogin yes`，重启ssh服务
 
   ```
   sudo vi /etc/ssh/sshd_config
-  #将注释符删掉
-  #PermitRootLogin
+  #Insert
+  PermitRootLogin yes
+  
   service sshd restart
   ```
 
@@ -178,11 +179,11 @@ XP：
 
   ![](img/ssh.png)
 
-- Debian中使用查看arp表失败
+- Debian中查看arp表失败
 
   ![](img/arp-notfound.png)
 
-  搜索教程后发现需要安装网络管理工具包`net-tools`
+  搜索教程后发现需要安装工具包`net-tools`
 
   ```
   apt update && apt install net-tools
@@ -190,15 +191,15 @@ XP：
 
 - 网关无法ping通XP靶机
 
-  测试中网关对于Kali靶机连通性测试成功，但是对于XP靶机却连接失败，而XP靶机却可以ping通网关，后来发现需要开启防火墙ping功能
+  测试中网关对于Kali靶机连通性测试成功，但是对于XP靶机却ping失败，而XP靶机却可以ping通网关，后来发现需要开启防火墙ping功能
 
   ![](img/ping-XP-fail.png)
 
-  设置 -> 控制面板 -> windows防火墙 -> ‘高级’标签里面有关于ICMP的设定
+  `设置 -> 控制面板 -> windows防火墙 -> ‘高级’`标签里面有关于ICMP的设定
 
   ![](img/fw-ping.png)
 
-  连接成功
+  在不关闭防火墙的状态下连接成功。
 
 ## 参考链接
 
