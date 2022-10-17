@@ -69,9 +69,9 @@
 
 （点击跳转至相应板块）
 
-- [TCP connect scan](#2.1.1 TCP connect scan) / [TCP stealth scan](#2.1.2 TCP stealth scan)
-- [TCP Xmas scan](#2.2.1 TCP Xmas scan) / [TCP fin scan](#2.2.2 TCP fin scan) / [TCP null scan](#2.2.3 TCP null scan)
-- [UDP scan](#3.1 UDP scan)
+- [TCP connect scan](#2.1.1-TCP-connect-scan) / [TCP stealth scan](#2.1.2-TCP-stealth-scan)
+- [TCP Xmas scan](#2.2.1-TCP-Xmas-scan) / [TCP fin scan](#2.2.2-TCP-fin-scan) / [TCP null scan](#2.2.3 TCP-null-scan)
+- [UDP scan](#3.1-UDP-scan)
 
 ### 2.扫描技术测试
 
@@ -103,7 +103,7 @@ tshark -r XXX.pcap -Y XXX
   from scapy.all import *
   
   dst_ip = "172.16.111.118"   # VicKali
-  src_port = 12345  # 生成一个随机数
+  src_port = 12345 
   dst_port = 80
   
   second_server_response = sr1(IP(dst=dst_ip)/TCP(sport=src_port,dport=dst_port,flags="S"),timeout=10)
@@ -417,10 +417,10 @@ UDP 是一个无链接的协议，当我们向目标主机的 UDP 端口发送�
   解决方案是设置防火墙阻止内核发送RST包，使用`iptables`编写规则如下：
 
   ```
-  iptables -A OUTPUT -p tcp --tcp-flags RST RST -d 172.16.111.118 -j DROP
+  iptables -A OUTPUT -p tcp --tcp-flags RST RST -s 172.16.111.138 -j DROP
   ```
 
-  这样设置之后，系统虽然没有再发送RST包了，但第三次握手并未完成，原因是第三次握手用了一个新的端口，需要设置成第一次握手相同的端口，（端口号最好自行指定，比如12345之类，使用`randport（）`函数指定会导致两次端口不一）并设置`ack、seq`的值才可以完成三次握手（详细代码见[TCP connect scan](#2.1.1 TCP connect scan) ）
+  这样设置之后，系统虽然没有再发送RST包了，但第三次握手并未完成，原因是第三次握手用了一个新的端口，需要设置成第一次握手相同的端口，（端口号最好自行指定，比如12345之类，使用`randport（）`函数指定会导致两次端口不一）并设置`ack、seq`的值才可以完成三次握手（详细代码见[TCP connect scan](#2.1.1-TCP-connect-scan) ）
 
   修改完毕后再次分析抓包，得到与课本图中相同包
 
